@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>EpubReader</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+        <script src="js/zip.min.js"></script>
+        <script src="js/epub.js"></script>
+        <script src="js/main.js"></script>
+        <script>
+            var Book = ePub("https://s3.amazonaws.com/moby-dick/");
+        </script>
+    </head>
+    <body style="height:95vh;">
+        <div class="container clearfix">
+            <div id="area" class="clearfix"></div>
+            <div id="prev" onclick="Book.prevPage();" class="arrow"><i class="fa fa-arrow-left"></i></div>
+            <div id="next" onclick="Book.nextPage();"class="arrow"><i class="fa fa-arrow-right"></i></div>
+        </div>
+        <script>
+            Book.renderTo("area");
+            var iframe = document.getElementsByTagName('iframe');
+            console.log(iframe);
+            function getIframeSelectionText(iframe) {
+              var win = iframe && iframe.contentWindow;
+              var doc = win && win.document;
+              if (win.getSelection) {
+                return win.getSelection().toString();
+              } else if (doc.selection && doc.selection.createRange) {
+                return doc.selection.createRange().text;
+              }
+            }
+
+            var iframe = document.getElementsByTagName('iframe');
+            console.log(iframe);
+            alert(getIframeSelectionText(iframe));
+
+        </script>
+    </body>
+</html>

@@ -1,0 +1,41 @@
+.clearfix:after {
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+}
+.clearfix { 
+	display: inline-block; 
+}
+* html .clearfix { 
+	height: 1%; 
+}
+.clearfix { 
+	display: block; 
+}
+.container{
+	height: 95%;
+	border:2px dashed;
+	padding:1rem;
+	padding-bottom: 0;
+}
+#area{
+	height:100%;
+}
+.arrow{
+	font-size: 20px;
+  	cursor:pointer;
+}
+#prev{
+	position: absolute;
+  	left: 20px;
+  	bottom:3px;
+}
+#next{
+	position: absolute;
+  	right: 20px;
+  	bottom:3px;
+
+}

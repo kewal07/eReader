@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="eng">
+  <head>
+    <meta content="82bcdcab-9903-4b2f-9563-4abc32b7a12f" name="dtb:uid"/>
+    <meta content="2" name="dtb:depth"/>
+    <meta content="calibre (2.2.0)" name="dtb:generator"/>
+    <meta content="0" name="dtb:totalPageCount"/>
+    <meta content="0" name="dtb:maxPageNumber"/>
+  </head>
+  <docTitle>
+    <text>The Jungle Book</text>
+  </docTitle>
+  <navMap>
+    <navPoint class="chapter" id="num_1" playOrder="1">
+      <navLabel>
+        <text>THE JUNGLE BOOK</text>
+      </navLabel>
+      <content src="text/part0000_split_001.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_2" playOrder="2">
+      <navLabel>
+        <text>Contents</text>
+      </navLabel>
+      <content src="text/part0000_split_003.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_3" playOrder="3">
+      <navLabel>
+        <text>Mowgli's Brothers</text>
+      </navLabel>
+      <content src="text/part0000_split_004.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_4" playOrder="4">
+      <navLabel>
+        <text>Hunting-Song of the Seeonee Pack</text>
+      </navLabel>
+      <content src="text/part0000_split_005.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_5" playOrder="5">
+      <navLabel>
+        <text>Kaa's Hunting</text>
+      </navLabel>
+      <content src="text/part0001.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_6" playOrder="6">
+      <navLabel>
+        <text>Road-Song of the Bandar-Log</text>
+      </navLabel>
+      <content src="text/part0002_split_000.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_7" playOrder="7">
+      <navLabel>
+        <text>"Tiger! Tiger!"</text>
+      </navLabel>
+      <content src="text/part0002_split_001.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_8" playOrder="8">
+      <navLabel>
+        <text>Mowgli's Song</text>
+      </navLabel>
+      <content src="text/part0002_split_002.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_9" playOrder="9">
+      <navLabel>
+        <text>The White Seal</text>
+      </navLabel>
+      <content src="text/part0002_split_003.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_10" playOrder="10">
+      <navLabel>
+        <text>Lukannon</text>
+      </navLabel>
+      <content src="text/part0003_split_001.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_11" playOrder="11">
+      <navLabel>
+        <text>"Rikki-Tikki-Tavi"</text>
+      </navLabel>
+      <content src="text/part0003_split_002.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_12" playOrder="12">
+      <navLabel>
+        <text>Darzee's Chant</text>
+      </navLabel>
+      <content src="text/part0004_split_000.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_13" playOrder="13">
+      <navLabel>
+        <text>Toomai of the Elephants</text>
+      </navLabel>
+      <content src="text/part0004_split_001.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_14" playOrder="14">
+      <navLabel>
+        <text>Shiv and the Grasshopper</text>
+      </navLabel>
+      <content src="text/part0004_split_002.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_15" playOrder="15">
+      <navLabel>
+        <text>Her Majesty's Servants</text>
+      </navLabel>
+      <content src="text/part0004_split_003.html"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_16" playOrder="16">
+      <navLabel>
+        <text>Parade Song of the Camp Animals</text>
+      </navLabel>
+      <content src="text/part0005_split_001.html"/>
+    </navPoint>
+  </navMap>
+</ncx>
