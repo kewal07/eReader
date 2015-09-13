@@ -21,22 +21,24 @@
         </div>
         <script>
             Book.renderTo("area");
-            var iframe = document.getElementsByTagName('iframe');
-            console.log(iframe);
-            function getIframeSelectionText(iframe) {
-              var win = iframe && iframe.contentWindow;
-              var doc = win && win.document;
-              if (win.getSelection) {
-                return win.getSelection().toString();
-              } else if (doc.selection && doc.selection.createRange) {
-                return doc.selection.createRange().text;
-              }
-            }
+            // var iframe = document.getElementsByTagName('iframe');
+            // console.log(iframe);
+            // function getIframeSelectionText(iframe) {
+            //   var win = iframe && iframe.contentWindow;
+            //   var doc = win && win.document;
+            //   if (win.getSelection) {
+            //     return win.getSelection().toString();
+            //   } else if (doc.selection && doc.selection.createRange) {
+            //     return doc.selection.createRange().text;
+            //   }
+            // }
 
-            var iframe = document.getElementsByTagName('iframe');
-            console.log(iframe);
-            alert(getIframeSelectionText(iframe));
-
+            // var iframe = document.getElementsByTagName('iframe');
+            // console.log(iframe);
+            // alert(getIframeSelectionText(iframe));
+           Book.on("renderer:selected", function(selectedText){
+                console.log(selectedText.toString())
+            });
         </script>
     </body>
 </html>
