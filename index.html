@@ -14,30 +14,41 @@
         </script>
     </head>
     <body style="height:95vh;">
+        <div id="loader"><img src="img/loader.gif"></div>
+        <select id="toc"></select>
         <div class="container clearfix">
             <div id="area" class="clearfix"></div>
             <div id="prev" onclick="Book.prevPage();" class="arrow"><i class="fa fa-arrow-left"></i></div>
             <div id="next" onclick="Book.nextPage();"class="arrow"><i class="fa fa-arrow-right"></i></div>
         </div>
         <script>
+            Book.getMetadata().then(function(meta){
+                document.title = meta.bookTitle+" – "+meta.creator;
+            });
+            Book.getToc().then(function(toc){
+              var $select = document.getElementById("toc"),
+                  docfrag = document.createDocumentFragment();
+              toc.forEach(function(chapter) {
+                var option = document.createElement("option");
+                option.textContent = chapter.label;
+                option.ref = chapter.href;
+                docfrag.appendChild(option);
+              });
+              $select.appendChild(docfrag);
+              $select.onchange = function(){
+                  var index = $select.selectedIndex,
+                      url = $select.options[index].ref;
+                  Book.goto(url);
+                  return false;
+              }
+            });
+            Book.ready.all.then(function(){
+              document.getElementById("loader").style.display = "none";
+            });
             Book.renderTo("area");
-            // var iframe = document.getElementsByTagName('iframe');
-            // console.log(iframe);
-            // function getIframeSelectionText(iframe) {
-            //   var win = iframe && iframe.contentWindow;
-            //   var doc = win && win.document;
-            //   if (win.getSelection) {
-            //     return win.getSelection().toString();
-            //   } else if (doc.selection && doc.selection.createRange) {
-            //     return doc.selection.createRange().text;
-            //   }
-            // }
-
-            // var iframe = document.getElementsByTagName('iframe');
-            // console.log(iframe);
-            // alert(getIframeSelectionText(iframe));
-           Book.on("renderer:selected", function(selectedText){
+            Book.on("renderer:selected", function(selectedText){
                 console.log(selectedText.toString())
+                alert("You selected : "+selectedText.toString());
             });
         </script>
     </body>
