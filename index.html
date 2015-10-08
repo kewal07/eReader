@@ -9,6 +9,8 @@
         <script src="js/zip.min.js"></script>
         <script src="js/epub.js"></script>
         <script src="js/main.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> 
+        <script async defer src="//hypothes.is/embed.js"></script>
         <script>
             var Book = ePub("https://s3.amazonaws.com/moby-dick/");
         </script>
@@ -47,9 +49,21 @@
             });
             Book.renderTo("area");
             Book.on("renderer:selected", function(selectedText){
-                console.log(selectedText.toString())
-                alert("You selected : "+selectedText.toString());
+                console.log(selectedText)
+                //Book.setStyle("background-color", "yellow");
+                //$(this).css("background-color","yellow");
+                //alert("You selected : "+selectedText.toString());
+
             });
+            // Book.on("renderer:chapterDisplayed", function(text){
+            //     console.log(text.contents.innerText);
+            //     // var msg = new SpeechSynthesisUtterance(text.contents.innerText);
+            //     // window.speechSynthesis.speak(msg);
+            //     var su = new SpeechSynthesisUtterance();
+            //     su.lang = "en";
+            //     su.text = "Hello World";
+            //     speechSynthesis.speak(su);
+            // });
         </script>
     </body>
 </html>
