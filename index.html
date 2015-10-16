@@ -10,7 +10,6 @@
         <script src="js/epub.js"></script>
         <script src="js/main.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> 
-        <script async defer src="//hypothes.is/embed.js"></script>
         <script>
             var Book = ePub("https://s3.amazonaws.com/moby-dick/");
         </script>
@@ -18,52 +17,80 @@
     <body style="height:95vh;">
         <div id="loader"><img src="img/loader.gif"></div>
         <select id="toc"></select>
+        <div class="test"></div><button id="save_open">Save As note</button><br/>
+        <div id="save_detail" style="display:none">
+          <input type=text id="notes" />  <button id="save_close">Save</button>
+        </div><br/>
         <div class="container clearfix">
             <div id="area" class="clearfix"></div>
             <div id="prev" onclick="Book.prevPage();" class="arrow"><i class="fa fa-arrow-left"></i></div>
             <div id="next" onclick="Book.nextPage();"class="arrow"><i class="fa fa-arrow-right"></i></div>
         </div>
-        <script>
-            Book.getMetadata().then(function(meta){
-                document.title = meta.bookTitle+" – "+meta.creator;
-            });
-            Book.getToc().then(function(toc){
-              var $select = document.getElementById("toc"),
-                  docfrag = document.createDocumentFragment();
-              toc.forEach(function(chapter) {
-                var option = document.createElement("option");
-                option.textContent = chapter.label;
-                option.ref = chapter.href;
-                docfrag.appendChild(option);
-              });
-              $select.appendChild(docfrag);
-              $select.onchange = function(){
-                  var index = $select.selectedIndex,
-                      url = $select.options[index].ref;
-                  Book.goto(url);
-                  return false;
-              }
-            });
-            Book.ready.all.then(function(){
-              document.getElementById("loader").style.display = "none";
-            });
-            Book.renderTo("area");
-            Book.on("renderer:selected", function(selectedText){
-                console.log(selectedText)
-                //Book.setStyle("background-color", "yellow");
-                //$(this).css("background-color","yellow");
-                //alert("You selected : "+selectedText.toString());
+        <button id="show_list">Show List</button>
+        <div id="showList"></div><br/><br/>
+<script>
+  var lists=[];
+  var temp_highlight=null;
+  var Book = ePub("https://s3.amazonaws.com/moby-dick/");
+  Book.getMetadata().then(function(meta) {
+    document.title = meta.bookTitle + " – " + meta.creator;
+  });
+  Book.getToc().then(function(toc) {
+    var $select = document.getElementById("toc"),
+      docfrag = document.createDocumentFragment();
+    toc.forEach(function(chapter) {
+      var option = document.createElement("option");
+      option.textContent = chapter.label;
+      option.ref = chapter.href;
+      docfrag.appendChild(option);
+    });
+    $select.appendChild(docfrag);
+    $select.onchange = function() {
+      var index = $select.selectedIndex,
+        url = $select.options[index].ref;
+      Book.goto(url);
+      return false;
+    }
+  });
+  Book.ready.all.then(function() {
+    document.getElementById("loader").style.display = "none";
+  });
+  Book.renderTo("area");
+  Book.on("renderer:selected", function(selectedText) {
+    temp_highlight=selectedText.toString();
+    console.log(selectedText.toString());
+  });
+  $("#save_open").on('click',function(){
+      $("#save_detail").css("display","block");
+  })
+  $("#save_close").on('click',function(){
+      var notes=$("#notes").val();
+      var location=Book.getCurrentLocationCfi();
+      lists.push({
+          notes:notes,
+          location:location,
+          text:temp_highlight
+      });
+      alert("saved");
+     $("#save_detail").css("display","none"); 
+     
+  });
+  $("#show_list").on('click',function(){
+    $("#showList").css('display','block');
+    $("#showList").empty();
+    lists.forEach(function(list){
+      $("#showList").append("<br/> Notes ->"+list.notes+ " Highlighted -> "+list.text
+        +"<button id='navigate' location="+list.location+">GO</button>");
+    });
+  });
 
-            });
-            // Book.on("renderer:chapterDisplayed", function(text){
-            //     console.log(text.contents.innerText);
-            //     // var msg = new SpeechSynthesisUtterance(text.contents.innerText);
-            //     // window.speechSynthesis.speak(msg);
-            //     var su = new SpeechSynthesisUtterance();
-            //     su.lang = "en";
-            //     su.text = "Hello World";
-            //     speechSynthesis.speak(su);
-            // });
-        </script>
+  $("body").on('click','#navigate',function(){
+      var location = $(this).attr('location');
+      var navigate = Book.gotoCfi(location);
+      navigate.then(function(){
+        console.log("Navigation Complete");
+      });
+  });
+</script>
     </body>
 </html>
