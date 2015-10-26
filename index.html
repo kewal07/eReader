@@ -10,9 +10,25 @@
         <script src="js/epub.js"></script>
         <script src="js/main.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> 
+        <script type="text/javascript" src="js/rangy-core.js"></script>
+        <script type="text/javascript" src="js/rangy-classapplier.js"></script>
+        <script type="text/javascript" src="js/rangy-highlighter.js"></script>
         <script>
             var Book = ePub("https://s3.amazonaws.com/moby-dick/");
         </script>
+      <style type="text/css">
+        .highlight {
+            background-color: yellow;
+        }
+
+        .note {
+            background-color: limegreen;
+        }
+
+        #summary {
+            border: dotted orange 1px;
+        }
+    </style>
     </head>
     <body style="height:95vh;">
         <div id="loader"><img src="img/loader.gif"></div>
@@ -27,9 +43,72 @@
             <div id="next" onclick="Book.nextPage();"class="arrow"><i class="fa fa-arrow-right"></i></div>
         </div>
         <button id="show_list">Show List</button>
+        <button id="range">Grab and Wrap - Iframe</button><br/><br/>
         <div id="showList"></div><br/><br/>
 <script>
   var lists=[];
+  var iframe;
+   // var serializedHighlights = decodeURIComponent(window.location.search.slice(window.location.search.indexOf("=") + 1));
+   //      var highlighter;
+
+   //      var initialDoc;
+
+        
+   //          rangy.init();
+
+   //          highlighter = rangy.createHighlighter();
+
+   //          highlighter.addClassApplier(rangy.createClassApplier("highlight", {
+   //              ignoreWhiteSpace: true,
+   //              tagNames: ["span", "a"]
+   //          }));
+
+   //          highlighter.addClassApplier(rangy.createClassApplier("note", {
+   //              ignoreWhiteSpace: true,
+   //              elementTagName: "a",
+   //              elementProperties: {
+   //                  href: "#",
+   //                  onclick: function() {
+   //                      var highlight = highlighter.getHighlightForElement(this);
+   //                      if (window.confirm("Delete this note (ID " + highlight.id + ")?")) {
+   //                          highlighter.removeHighlights( [highlight] );
+   //                      }
+   //                      return false;
+   //                  }
+   //              }
+   //          }));
+
+
+   //          if (serializedHighlights) {
+   //              highlighter.deserialize(serializedHighlights);
+   //          }
+
+
+   //      function highlightSelectedText() {
+   //          highlighter.highlightSelection("highlight");
+   //      }
+
+   //      function noteSelectedText() {
+   //          highlighter.highlightSelection("note");
+   //      }
+
+   //      function removeHighlightFromSelectedText() {
+   //          highlighter.unhighlightSelection();
+   //      }
+
+   //      function highlightScopedSelectedText() {
+   //          highlighter.highlightSelection("highlight", { containerElementId: "summary" });
+   //      }
+
+   //      function noteScopedSelectedText() {
+   //          highlighter.highlightSelection("note", { containerElementId: "summary" });
+   //      }
+
+   //      function reloadPage(button) {
+   //          button.form.elements["serializedHighlights"].value = highlighter.serialize();
+   //          button.form.submit();
+   //      }
+
   var temp_highlight=null;
   var Book = ePub("https://s3.amazonaws.com/moby-dick/");
   Book.getMetadata().then(function(meta) {
@@ -53,13 +132,16 @@
     }
   });
   Book.ready.all.then(function() {
+    iframe = $("iframe")[0];
     document.getElementById("loader").style.display = "none";
   });
   Book.renderTo("area");
-  Book.on("renderer:selected", function(selectedText) {
-    temp_highlight=selectedText.toString();
-    console.log(selectedText.toString());
-  });
+  // Book.on("renderer:selected", function(selectedText) {
+  //   // cfi=Book.getCurrentLocationCfi();
+  //   // this.epubcfi.addMarker(cfi);
+  //   temp_highlight=selectedText.toString();
+  //   console.log(selectedText.toString());
+  // });
   $("#save_open").on('click',function(){
       $("#save_detail").css("display","block");
   })
@@ -91,6 +173,29 @@
         console.log("Navigation Complete");
       });
   });
+  $("body").on('click','#range',function(){
+        var selection = rangy.getSelection(iframe);
+        console.log(selection);
+        alert(selection);
+            // rangy.init();
+
+            // highlighter = rangy.createHighlighter();
+
+            // highlighter.addClassApplier(rangy.createClassApplier("highlight", {
+            //     ignoreWhiteSpace: true,
+            //     tagNames: ["span"]
+            // }));
+            // highlighter.highlightSelection("highlight",selection);
+             var range = selection.getRangeAt(0);
+                var el = document.createElement("span");
+                el.style.backgroundColor = "pink";
+                if (range.canSurroundContents(el)) {
+                    range.surroundContents(el);
+                } else {
+                    alert("Unable to surround range ");
+                }
+  });
+
 </script>
     </body>
 </html>
