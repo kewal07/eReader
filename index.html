@@ -15,34 +15,84 @@
         <script type="text/javascript" src="js/rangy-classapplier.js"></script>
         <script type="text/javascript" src="js/rangy-highlighter.js"></script>
         <script type="text/javascript" src="js/rangy-serializer.js"></script>
+        <script type="text/javascript" src="js/rangy-textrange.js"></script>
         <script>
             var Book = ePub("https://s3.amazonaws.com/moby-dick/");
         </script>
-      <style type="text/css">
-        .highlight {
+    <style type="text/css">
+        *.searchResult {
+            font-weight: bold;
             background-color: yellow;
         }
-
-        .note {
-            background-color: limegreen;
+      .meter { 
+        height: 20px;  
+        position: relative;
+        background: #555;
+        -moz-border-radius: 25px;
+        -webkit-border-radius: 25px;
+        border-radius: 25px;
+        padding: 10px;
+        box-shadow: inset 0 -1px 1px rgba(255,255,255,0.3);
+      }
+        *.redItalic {
+            font-style: italic;
+            color: red;
         }
 
-        #summary {
-            border: dotted orange 1px;
+        *.demo {
+            border: solid darkblue 1px;
+            background-color: #f5f5f5;
+            padding: 10px;
         }
+
+        *.buttonSpan {
+            border: solid #333 1px;
+            background-color: #f5f5f5;
+            padding: 2px;
+            cursor: default;
+            font-size: 165%;
+            font-weight: bold;
+        }
+.meter > span {
+  display: block;
+  height: 100%;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  background-color: rgb(43,194,83);
+  background-image: linear-gradient(
+    center bottom,
+    rgb(43,194,83) 37%,
+    rgb(84,240,84) 69%
+  );
+  box-shadow: 
+    inset 0 2px 9px  rgba(255,255,255,0.3),
+    inset 0 -2px 6px rgba(0,0,0,0.4);
+  position: relative;
+  overflow: hidden;
+}
     </style>
     </head>
     <body style="height:95vh;">
+      <div id="test" style="display:none">
+        <span>Hello Hi HEY</span>
+      </div>
+</div>
         <div id="loader"><img src="img/loader.gif"></div>
         <select id="toc"></select>
         <div class="test"></div><button id="save_open">Save As note</button><br/>
         <div id="save_detail" style="display:none">
           <input type=text id="notes" />  <button id="save_close">Save</button>
         </div><br/>
+        <div class="meter">
+          <span style="width: 0%" id="progress"></span>
+        </div>
+        <br><br>
         <div class="container clearfix">
             <div id="area" class="clearfix"></div>
-            <div id="prev" onclick="Book.prevPage();" class="arrow"><i class="fa fa-arrow-left"></i></div>
-            <div id="next" onclick="Book.nextPage();"class="arrow"><i class="fa fa-arrow-right"></i></div>
+            <div id="prev" onclick="book.prevPage();" class="arrow"><i class="fa fa-arrow-left"></i></div>
+            <div id="next" onclick="book.nextPage();"class="arrow"><i class="fa fa-arrow-right"></i></div>
         </div>
         <button id="show_list">Show List</button>
         <button id="range">Grab and Wrap - Iframe</button><br/><br/>
@@ -71,14 +121,15 @@
 
 
   var lists=[];
+  var myrange;
   var iframe;
   var cfidetail=[];
   var temp_highlight=null;
-  var Book = ePub("https://s3.amazonaws.com/moby-dick/");
-  Book.getMetadata().then(function(meta) {
+  var book = ePub("https://s3.amazonaws.com/moby-dick/");
+  book.getMetadata().then(function(meta) {
     document.title = meta.bookTitle + " – " + meta.creator;
   });
-  Book.getToc().then(function(toc) {
+  book.getToc().then(function(toc) {
     var $select = document.getElementById("toc"),
       docfrag = document.createDocumentFragment();
     toc.forEach(function(chapter) {
@@ -91,132 +142,37 @@
     $select.onchange = function() {
       var index = $select.selectedIndex,
         url = $select.options[index].ref;
-      Book.goto(url);
+      book.goto(url);
       return false;
     }
   });
-  Book.ready.all.then(function() {
+  book.ready.all.then(function() {
     iframe = $("iframe")[0];
+    book.generatePagination().then(function () {
+        console.log(Book.pagination.totalPages);
+  });
     document.getElementById("loader").style.display = "none";
     var CFI = Parse.Object.extend("CFI");
     var getcfi=new Parse.Query("CFI");
-    getcfi.find({
-      success:function(results){
-        results.forEach(function(item){
-          cfidetail.push({cfistring:item.get('cfistring'),pagestring:item.get('pagestring')});
-        //   var selection = rangy.deserializeSelection(cfistring,null,iframe.contentWindow)
-        //   var range = selection.getRangeAt(0);
-        //   var el = document.createElement("span");
-        //   el.style.backgroundColor = "pink";
-        //   if (range.canSurroundContents(el)) {
-        //       range.surroundContents(el);
-        //   } else {
-        //       alert("Unable to Highlight");
-        //   }
-        })
-      },
-      error:function(error){
-        alert('error');
-      }
-    });
   });
-  Book.renderTo("area");
-  // Book.on("renderer:selected", function(selectedText) {
-  //   // cfi=Book.getCurrentLocationCfi();
-  //   // this.epubcfi.addMarker(cfi);
-  //   temp_highlight=selectedText.toString();
-  //   console.log(selectedText.toString());
-  // });
+  var rendered = book.renderTo("area");
+            book.pageListReady.then(function(pageList){
+                rendered.then(function(){
+                    var currentLocation = book.getCurrentLocationCfi();
+                    var currentPage = book.pagination.pageFromCfi(currentLocation);
+                    // slider.value = currentPage;
+                    currentPage.value = currentPage;
+                    console.log(currentPage);
+                });
+                currentPage.addEventListener("change", function(){
+                    book.gotoPage(currentPage.value);
+                }, false);
+            });
 
-  Book.on('renderer:locationChanged', function(locationCfi){
-    cfidetail.forEach(function(item){
-      if(item.pagestring === locationCfi){
-        var cfistring = item.cfistring;
-        var selection = rangy.deserializeSelection(cfistring,null,iframe.contentWindow)
-        var range = selection.getRangeAt(0);
-        var el = document.createElement("span");
-        el.style.backgroundColor = "pink";
-        if (range.canSurroundContents(el)) {
-            range.surroundContents(el);
-        } else {
-            alert("Unable to Highlight");
-        }
-      }
-    })
-  });
-  // Book.displayChapter().then(function(data){
-    // cfidetail.forEach(function(item){
-    //   if(item.get('pagestring') === locationCfi){
-    //     var cfistring = item.get('cfistring');
-    //     var selection = rangy.deserializeSelection(cfistring,null,iframe.contentWindow)
-    //     var range = selection.getRangeAt(0);
-    //     var el = document.createElement("span");
-    //     el.style.backgroundColor = "pink";
-    //     if (range.canSurroundContents(el)) {
-    //         range.surroundContents(el);
-    //     } else {
-    //         alert("Unable to Highlight");
-    //     }
-    //   }
-    // })
-  // })
-  $("#save_open").on('click',function(){
-      $("#save_detail").css("display","block");
-  })
-  $("#save_close").on('click',function(){
-      var notes=$("#notes").val();
-      var location=Book.getCurrentLocationCfi();
-      lists.push({
-          notes:notes,
-          location:location,
-          text:temp_highlight
-      });
-      alert("saved");
-     $("#save_detail").css("display","none"); 
-     
-  });
-  $("#show_list").on('click',function(){
-    $("#showList").css('display','block');
-    $("#showList").empty();
-    lists.forEach(function(list){
-      $("#showList").append("<br/> Notes ->"+list.notes+ " Highlighted -> "+list.text
-        +"<button id='navigate' location="+list.location+">GO</button>");
-    });
-  });
-
-  $("body").on('click','#navigate',function(){
-      var location = $(this).attr('location');
-      var navigate = Book.gotoCfi(location);
-      navigate.then(function(){
-        console.log("Navigation Complete");
-      });
-  });
-  $("body").on('click','#range',function(){
-      var selection = rangy.getSelection(iframe);
-      var CFI = Parse.Object.extend("CFI");
-      var cfi = new CFI();
-      cfi.set("cfistring",rangy.serializeSelection(selection));
-      cfi.set("pagestring",Book.getCurrentLocationCfi());
-      cfi.save({
-        success:function(){
-
-        },
-        error:function(error){
-
-        }
-      });
-      // console.log(selection);
-      // alert(selection);
-      var range = selection.getRangeAt(0);
-      var el = document.createElement("span");
-      el.style.backgroundColor = "pink";
-      if (range.canSurroundContents(el)) {
-          range.surroundContents(el);
-      } else {
-          alert("Unable to Highlight");
-      }
-  });
-
+            book.on('book:pageChanged', function(location){
+                $("#progress").width(location.percentage*100+'%');
+                console.log(location.pageRange)
+            });
 </script>
     </body>
 </html>
